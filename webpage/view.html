@@ -1,0 +1,40 @@
+function query_count(shoe_widths) {
+    /* Size must look like 100 or 105 for a half-size */
+    size_widths = $.map(shoe_widths, function(size_width) {
+        swa = size_width.split(" ");
+        size = sprintf("%02i", swa[0]);
+        if (swa[0].indexOf(".") > -1) {
+            size += "5";
+        } else {
+            size += "0";
+        }
+        width = swa[1];
+        return [size, width];
+    });
+
+    should_match = $.map(size_widths, function(swa) {
+        size = swa[0];
+        width = swa[1];
+        return {
+          "bool": {
+            "must": [{
+                "match": { "size": size },
+                "match": { "width": width }
+            }]
+          }
+        }; 
+    });
+
+    results = $.get("//shoebank/_count", {
+      "query": {
+        "bool": {
+          "should": should_match
+        }
+      }
+    }, function(data, status, jqXHR) {
+        $("#match_count").text(
+            parseInt($("#match_count").text()) + parseInt(data)
+        );
+    });
+}
+

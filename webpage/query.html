@@ -1,0 +1,150 @@
+<html>
+<head>
+
+<link href='http://fonts.googleapis.com/css?family=Josefin+Slab|Dancing+Script' rel='stylesheet' type='text/css'>
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
+<script src="sprintf.js/dist/sprintf.min.js"></script>
+<!--<script src="https://raw.githubusercontent.com/alexei/sprintf.js/master/src/sprintf.js" type="script/javascript"></script>-->
+
+<style>
+body { margin: 0; padding: 0; }
+#header { width: 100%; text-align: center; color: gold; background: black; padding: 1em;}
+h1 { font-family: 'Josefin Slab', serif; }
+h2 { font-family: 'Josefin Slab', serif; font-size: 1.75em; }
+h1 em { font-family: 'Dancing Script', cursive; }
+#shoe_search { width: 64em; margin-left: auto; margin-right: auto; }
+#shoebox { width: 50em; padding: 1em; } 
+#shoebox h2 { margin-left: 3em; }
+#shoesize_table li { float: left; text-align: right; width: 5em; cursor: hand; }
+.ui-selecting { background: #FECA40; }
+.ui-selected { background: #F39814; color: white; }
+
+#selection_info {
+    float: right;
+    width: 10em;
+    background: silver;
+    margin-top: 5em;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+#results {
+    clear: both;
+    padding-top: 3em;
+    margin-left: auto; margin-right: auto;
+    width: 64em;
+}
+h2 {
+    border-top: 1 black solid;
+    border-bottom: 1 black solid;
+    padding: .65ex 0 .25ex .5ex;
+}
+</style>
+</head>
+<body>
+
+<div id="header">
+<h1>The <em>Unofficial</em> AE Shoebank Inventory</h1>
+</div>
+
+<form id="shoe_search">
+
+<div id="selection_info">
+<!--<select>
+<option>All colors</option>
+</select>
+<select>
+<option>All styles</option>
+</select>-->
+<p><span id="match_count">0</span> matching styles.</p>
+<button>View Selected Inventory</button>
+</div>
+
+<h2>Select your sizes:</h2>
+<div id="shoebox">
+<!--<h2>Select your sizes:</h2>-->
+<ol id="shoesize_table">
+</ol>
+</div>
+</form>
+
+<div id="results">
+<h2>Matching selections:</h2>
+</div>
+
+
+<script>
+var widths = ["A", "2A", "3A", "B", "C", "D", "E", "2E", "3E"];
+for (i=5; i < 17; i++) {
+    var row = "";
+    for (w=0; w < widths.length; w++) {
+        row += "<li class='ui-widget-content'>" + i + " " + widths[w] + "</li>";
+    }
+    $("#shoesize_table").append(row);
+
+    var row = "";
+    if (i < 13) {
+        for (w=0; w < widths.length; w++) {
+            row += "<li class='ui-widget-content'>" + i + ".5 " + widths[w] + "</li>";
+        }
+    }
+    $("#shoesize_table").append(row);
+}
+
+function query_count(shoe_widths) {
+    /* Size must look like 100 or 105 for a half-size */
+    size_widths = $.map(shoe_widths, function(size_width) {
+        swa = size_width.split(" ");
+        size = sprintf("%02i", swa[0]);
+        if (swa[0].indexOf(".") > -1) {
+            size += "5";
+        } else {
+            size += "0";
+        }
+        width = swa[1];
+        return [size, width];
+    });
+
+    should_match = $.map(size_widths, function(swa) {
+        size = swa[0];
+        width = swa[1];
+        return {
+          "bool": {
+            "must": [{
+                "match": { "size": size },
+                "match": { "width": width }
+            }]
+          }
+        }; 
+    });
+
+    count = $.get("//shoebank/_count", {
+      "query": {
+        "bool": {
+          "should": should_match
+        }
+      }
+    }, function(data, status, jqXHR) {
+        $("#match_count").text(
+            parseInt($("#match_count").text()) + parseInt(data)
+        );
+    });
+}
+
+var selected_items = [];
+
+$("#shoesize_table").selectable({
+    stop: function(event, ui) {
+        $(match_count).text($(".ui-selected").length);
+        shoes = $.map($(".ui-selected"), function(v, k) {
+            return $(v).text();
+        });
+        $("#match_count").text("0");
+        query_count(shoes);
+    }
+});
+</script>
+</body>
+</html>
