@@ -16,5 +16,6 @@ NEWSPIDER_MODULE = 'shoebank.spiders'
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'shoebank (+http://www.yourdomain.com)'
 
-FEED_URI = 'file:///tmp/shoebank.csv'
+FEED_URI = 'stdout:'
+#file:///tmp/shoebank.csv'
 FEED_FORMAT = 'csv'
