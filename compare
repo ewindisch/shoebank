@@ -1,0 +1,26 @@
+#!/bin/bash
+
+[ -f today.csv ] &&
+    mv today.csv yesterday.csv
+
+docker run shoebank > today.csv
+
+diff -u <(sort yesterday.csv) <(sort today.csv) | grep ^+ > new.csv
+
+echo ""
+echo "New Cordovan Styles"
+echo ""
+grep -i cordovan new.csv
+
+echo ""
+echo "New No-Image shoes"
+echo ""
+grep NoImage new.csv
+
+echo ""
+echo "New shoes in 10.5 3E, 11 3E, and 11 2E"
+echo ""
+
+grep 110 new.csv | grep 3E
+grep 105 new.csv | grep 3E
+grep 110 new.csv | grep 2E
