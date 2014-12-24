@@ -10,6 +10,7 @@ class Shoe(scrapy.Item):
     size = scrapy.Field()
     width = scrapy.Field()
     style = scrapy.Field()
+    img = scrapy.Field()
 
 
 def request_generator():
@@ -38,6 +39,7 @@ class ShoeBankSpider(spiders.CrawlSpider):
             shoe['price'] = sel.xpath("a/div[@class='shoeBankPrice']/text()").extract()
             shoe['color'] = sel.xpath("a/div[@class='shoeBankColor']/text()").extract()
             #shoe['style'] = sel.xpath("a/span[@class='shoeBankStyle']/text()").extract()
+            shoe['img'] = sel.xpath("a/img/@src").extract()
 
             surl = urlparse.urlparse(bytes(sel.xpath("a[@class='GenericLink2']/@href").extract()))
             query = urlparse.parse_qs(surl.query)
