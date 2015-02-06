@@ -1,0 +1,27 @@
+Allen Edmonds Shoebank scraper
+------------------------------
+
+Scrapes the Allen Edmonds shoebank...
+
+With Docker installed, you can download inventory and generate reports with:
+
+ $ ./compare generate
+
+
+To print the reports without redownloading inventory:
+
+ $ ./compare
+
+Note that if 'generate' is called, it compares against the previously
+downloaded inventory. Inventory is updated daily, so the previous
+inventory is stored as "yesterday.csv".
+
+Much could be done to improve how the CSV files are saved and compared.
+
+Issues:
+--------
+
+- Presently, the entire shoebank database is downloaded. This is not
+  efficient for users looking for a single size and width.
+- My personal shoe size is hard-coded into the compare script. Users
+  will need to change this.
