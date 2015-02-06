@@ -14,7 +14,8 @@ To print the reports without redownloading inventory:
 
 Note that if 'generate' is called, it compares against the previously
 downloaded inventory. Inventory is updated daily, so the previous
-inventory is stored as "yesterday.csv".
+inventory is stored as "yesterday.csv". Upon calling 'generate' all
+CSV files are copied into the directory 'backup'.
 
 Much could be done to improve how the CSV files are saved and compared.
 
@@ -25,3 +26,11 @@ Issues:
   efficient for users looking for a single size and width.
 - My personal shoe size is hard-coded into the compare script. Users
   will need to change this.
+
+
+Graphs & Webpages:
+------------------
+
+This repository also includes a script to generate GraphViz
+visualizations and webpages in directory graph, with a top-level
+webpage setup in 'webpage/'. I don't recall how much of this works.
