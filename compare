@@ -1,11 +1,23 @@
 #!/bin/bash
 
-[ -f today.csv ] &&
-    mv today.csv yesterday.csv
+if [ "$1" == "generate" ]; then
+    mkdir backup
+    cp *.csv backup/
+    [ -f today.csv ] &&
+        mv today.csv yesterday.csv
 
-docker run shoebank > today.csv
+    docker run shoebank > today.csv
 
-diff -u <(sort yesterday.csv) <(sort today.csv) | grep ^+ > new.csv
+    [ ! -f yesterday.csv ] && exit 0
+
+    diff -u <(sort yesterday.csv) <(sort today.csv) | grep ^+ > new.csv
+
+
+    [ -f cordovan-specials.csv ] &&
+        mv cordovan-specials.csv cordovan-specials-yesterday.csv
+    grep -i cordovan today.csv  | grep -v Black | grep -v Burgundy | grep -v Brown > cordovan-specials.csv
+    diff -u <(sort cordovan-specials-yesterday.csv) <(sort cordovan-specials-today.csv) | grep ^+ > cordovan-specials-new.csv
+fi
 
 echo ""
 echo "New Cordovan Styles"
@@ -13,14 +25,22 @@ echo ""
 grep -i cordovan new.csv
 
 echo ""
+echo "New 'special' Cordovan Styles"
+echo ""
+cat cordovan-specials-new.csv
+
+echo ""
 echo "New No-Image shoes"
 echo ""
 grep NoImage new.csv
 
 echo ""
-echo "New shoes in 10.5 3E, 11 3E, and 11 2E"
+echo "New shoes in 10.5 3E" #, 11 3E, and 11 2E"
 echo ""
 
-grep 110 new.csv | grep 3E
+#cat <(grep 110 new.csv | grep 3E) \
+#    <(grep 105 new.csv | grep 3E) \
+#    <(grep 110 new.csv | grep 2E) |
+#    sort -u
+
 grep 105 new.csv | grep 3E
-grep 110 new.csv | grep 2E
