@@ -5,8 +5,8 @@
 <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
 <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 <script src="http://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
-<script src="sprintf.js/dist/sprintf.min.js"></script>
-<!--<script src="https://raw.githubusercontent.com/alexei/sprintf.js/master/src/sprintf.js" type="script/javascript"></script>-->
+<!--<script src="sprintf.js/dist/sprintf.min.js"></script>-->
+<script src="https://raw.githubusercontent.com/alexei/sprintf.js/master/src/sprintf.js" type="script/javascript"></script>
 
 <style>
 body { margin: 0; padding: 0; }
@@ -15,7 +15,7 @@ h1 { font-family: 'Josefin Slab', serif; }
 h2 { font-family: 'Josefin Slab', serif; font-size: 1.75em; }
 h1 em { font-family: 'Dancing Script', cursive; }
 #shoe_search { width: 64em; margin-left: auto; margin-right: auto; }
-#shoebox { width: 50em; padding: 1em; } 
+#shoebox { width: 50em; padding: 1em; }
 #shoebox h2 { margin-left: 3em; }
 #shoesize_table li { float: left; text-align: right; width: 5em; cursor: hand; }
 .ui-selecting { background: #FECA40; }
@@ -117,7 +117,7 @@ function query_count(shoe_widths) {
                 "match": { "width": width }
             }]
           }
-        }; 
+        };
     });
 
     count = $.get("//shoebank/_count", {
